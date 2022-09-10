@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 from orjson import loads
-from aiosqlite import connect
+from aiosqlite import connect, Connection
 
 from os import listdir
 
@@ -13,6 +13,8 @@ class Secret(TypedDict):
     owners: List[int]
 
 class Develop(commands.Bot):
+    db: Connection | None = None
+
     with open("secret.json", "r") as f:
         secret: Secret = loads(f.read())
 
@@ -29,10 +31,8 @@ class Develop(commands.Bot):
 
     async def close(self) -> None:
         await super().close()
-        try:
+        if self.db is not None:
             await self.db.close()
-        except AttributeError:
-            pass
 
     async def is_owner(self, user: discord.User | discord.Member) -> bool:
         return await super().is_owner(user) or user.id in self.secret["owners"]
