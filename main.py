@@ -11,7 +11,7 @@ else:
 
 
 intents = discord.Intents.all()
-intents.typing = False
+intents.typing = False # Disable typing events
 bot = Develop(command_prefix="$", intents=intents)
 
 

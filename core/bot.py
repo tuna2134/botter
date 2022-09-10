@@ -20,14 +20,19 @@ class Develop(commands.Bot):
         await self.load_extension("jishaku")
         self.db = await connect("main.db")
         for filename in listdir("cogs"):
-            await self.load_extension(f"cogs.{filename[:-2]}")
+            if filename.startswith("_"):
+                continue
+            await self.load_extension(f"cogs.{filename[:-3]}")
 
     async def on_ready(self) -> None:
         print("Start")
 
     async def close(self) -> None:
-        await self.db.close()
         await super().close()
+        try:
+            await self.db.close()
+        except AttributeError:
+            pass
 
-    async def is_owner(self, user: discord.User) -> bool:
-        return await super().is_owner() or user.id in self.secret["owners"]
+    async def is_owner(self, user: discord.User | discord.Member) -> bool:
+        return await super().is_owner(user) or user.id in self.secret["owners"]

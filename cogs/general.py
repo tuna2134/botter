@@ -1,9 +1,9 @@
-from core import Develop
+from core import Develop, Cog
 
 from discord.ext import commands
 
 
-class General(commands.Cog):
+class General(Cog):
     def __init__(self, bot: Develop):
         self.bot = bot
 
